@@ -33,7 +33,7 @@ function initializeWallet() {
 
 initializeWallet();
 
-import App from "./App.vue";
+import App from "@/App.vue";
 
 const app = createApp(App);
 

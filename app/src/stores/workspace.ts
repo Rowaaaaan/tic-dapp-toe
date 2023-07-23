@@ -1,7 +1,8 @@
 import { computed } from "vue";
 import { useAnchorWallet } from "solana-wallets-vue";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
-import idl from "@/idl/tic_tac_toe.json";
+import type { Idl } from "@coral-xyz/anchor";
+import idl from "../idl/tic_tac_toe.json";
 import {
 	PublicKey,
 	Connection,
@@ -10,6 +11,7 @@ import {
 
 
 export const useWorkspace = () => {
+	// @ts-ignore
 	const IDL: Idl = idl;
 	const conn = new Connection(clusterApiUrl("devnet", true), "confirmed");
 	const wallet = useAnchorWallet();

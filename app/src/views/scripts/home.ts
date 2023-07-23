@@ -1,6 +1,6 @@
 import { useWallet } from "solana-wallets-vue";
 import { onMounted, ref } from "vue";
-import { useWorkspace } from "@/stores/workspace";
+import { useWorkspace } from "../../stores/workspace";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 import { useRouter } from "vue-router";
 

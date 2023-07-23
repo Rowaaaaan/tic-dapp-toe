@@ -20,7 +20,7 @@
 	</header>
 </template>
 
-<script src="./scripts/header.ts" lang="ts" />
+<script lang="ts" src="./scripts/header" />
 
 <style scoped>
 header {
