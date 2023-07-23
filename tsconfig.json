@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"types": [
+			"mocha",
+			"chai",
+			"vue"
+		],
+		"typeRoots": [
+			"./node_modules/@types",
+			"./node_modules/@solana/wallet-adapter-base/lib/types",
+			"./node_modules/@coral-xyz/anchor/dist/cjs/utils/"
+		],
+		"lib": [
+			"es2015"
+		],
+		"module": "commonjs",
+		"target": "es6",
+		"esModuleInterop": true,
+		"moduleResolution": "node"
+	}
+}

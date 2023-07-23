@@ -1,0 +1,20 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+tic_tac_toe = "CwnZBvhPLva1bSUiunhvatsBAL4o7LspALj1BgQpa3AP"
+
+[programs.devnet]
+tic_tac_toe = "CwnZBvhPLva1bSUiunhvatsBAL4o7LspALj1BgQpa3AP"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "/home/rowan/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+build_idl = "anchor build && cp target/idl/tic_tac_toe.json app/src/idl/"
