@@ -10,3 +10,4 @@ Cargo.lock
 package-lock.json
 yarn.lock
 app/dist
+app/Session.vim
