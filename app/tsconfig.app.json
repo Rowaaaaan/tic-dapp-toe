@@ -4,11 +4,12 @@
 		"env.d.ts",
 		"src/**/*",
 		"src/**/*.*",
+		"src/**/**/*.*",
 		"src/idl/*.json",
-		"src/stores/*.*",
-		"src/routes/*.*",
-		"src/views/**/*.*",
-		"scr/components"
+		// "src/stores/*.*",
+		// "src/routes/*.*",
+		// "src/views/**/*.*",
+		// "src/components"
 	],
 	"exclude": [
 		"src/**/__tests__/*"
@@ -19,8 +20,20 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": [
-				"./src/*"
-			]
+				"./src/*",
+			],
+			"idl/*": [
+				"./src/idl/*"
+			],
+			"@components/*": [
+				"./src/components/*"
+			],
+			"@stores/*": [
+				"./src/stores/*"
+			],
+			"views/*": [
+				".src/views/*",
+			],
 		}
 	}
 }
