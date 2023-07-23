@@ -1,0 +1,4 @@
+.app-wrapper {
+  display: flex;
+  place-items: center;
+}
