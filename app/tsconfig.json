@@ -14,5 +14,4 @@
 			"path": "./tsconfig.vitest.json"
 		}
 	],
-	"outDir": "build",
 }

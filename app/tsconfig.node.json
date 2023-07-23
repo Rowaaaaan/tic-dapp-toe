@@ -10,9 +10,9 @@
 	"compilerOptions": {
 		"composite": true,
 		"module": "commonjs",
-		// "types": [
-		//	"node"
-		// ],
+		"types": [
+			"node"
+		],
 		"typeRoots": [
 			"./node_modules/"
 		]
