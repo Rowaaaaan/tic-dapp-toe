@@ -11,3 +11,4 @@ package-lock.json
 yarn.lock
 app/dist
 app/Session.vim
+app/package-lock.json
