@@ -11,6 +11,7 @@
 		"type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
 	},
 	"dependencies": {
+		"@coral-xyz/anchor": "^0.28.1-beta.1",
 		"@solana/wallet-adapter-base": "^0.9.22",
 		"@solana/wallet-adapter-wallets": "^0.19.18",
 		"@solana/web3.js": "^1.78.0",
