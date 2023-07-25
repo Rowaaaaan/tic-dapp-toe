@@ -1,9 +1,10 @@
 <template>
 	<main class="d-flex justify-content-center">
 		<div class="container game-wrapper">
+			<h3 class="text-center">Game ID: {{ gameId }}</h3>
 			<div v-for="row in board.rows" class="row">
 				<div v-for="tile in row" class="tile col d-flex justify-content-center align-items-center"
-					@click="setTile(tile)">
+					@click="onSetTile(tile)">
 					<p :class="playerOneTurn ? 'player-one' : 'player-two'">{{ tile.value }}</p>
 				</div>
 			</div>
