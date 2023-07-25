@@ -5,6 +5,7 @@
 		"src/**/*",
 		"src/**/*.*",
 		"src/**/**/*.*",
+		"src/idl/*.ts",
 		"src/idl/*.json",
 		// "src/stores/*.*",
 		// "src/routes/*.*",
