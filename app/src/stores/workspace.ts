@@ -1,21 +1,26 @@
 import { computed } from "vue";
-import { useWallet, useAnchorWallet } from "solana-wallets-vue";
+import type { Ref } from "vue";
+
+import { useWallet, useAnchorWallet, initWallet } from "solana-wallets-vue";
+import type { AnchorWallet } from "solana-wallets-vue";
+import type { WalletStore } from "solana-wallets-vue/dist/types";
+
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
-import type { TicTacToe } from "../idl/tic_tac_toe";
-import idl from "../idl/tic_tac_toe.json";
 import {
 	PublicKey,
 	Connection,
 	clusterApiUrl,
 } from "@solana/web3.js";
 
-import { initWallet } from "solana-wallets-vue";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
 	PhantomWalletAdapter,
 	SlopeWalletAdapter,
 	SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+
+import type { TicTacToe } from "../idl/tic_tac_toe";
+import idl from "../idl/tic_tac_toe.json";
 
 const walletOptions = {
 	wallets: [
@@ -27,7 +32,6 @@ const walletOptions = {
 };
 
 export const useWorkspace = () => {
-	initWallet(walletOptions);
 	// @ts-ignore
 	const IDL: TicTacToe = idl;
 	const programAddress = process.env.PROGRAM_ADDRESS ?? "CwnZBvhPLva1bSUiunhvatsBAL4o7LspALj1BgQpa3AP";
@@ -36,10 +40,10 @@ export const useWorkspace = () => {
 
 	// Provider wallet is purely for creating a provider, which we need
 	// to create the program
-	const providerWallet = useAnchorWallet();
+	const providerWallet: Ref<AnchorWallet | undefined> = useAnchorWallet();
 
 	// useWallet() is better for using in UI
-	const userWallet = useWallet();
+	const userWallet: WalletStore = useWallet();
 
 	console.log("User wallet data: ");
 	console.log(userWallet);
