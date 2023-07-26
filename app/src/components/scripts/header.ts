@@ -1,12 +1,13 @@
 import { ref, defineComponent, onMounted } from "vue";
 import { Keypair, SystemProgram, Transaction, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useWallet } from "solana-wallets-vue";
+import { useWorkspace } from "../../stores/workspace";
 import { WalletMultiButton } from 'solana-wallets-vue';
-import type { WalletStore } from 'solana-wallets-vue/dist/types';
+import type { WalletStore, Wallet } from 'solana-wallets-vue/dist/types';
+import type { Ref } from "vue";
 
 import { Connection, clusterApiUrl } from '@solana/web3.js';
 
-async function sendOneLamportToRandomAddress(wallet: any, connection: Connection) {
+async function sendOneLamportToRandomAddress(wallet: WalletStore, connection: Connection) {
 	console.log("Transfer 1 lamport requested");
 	const { publicKey, sendTransaction } = wallet;
 	if (!publicKey.value) return;
@@ -60,7 +61,7 @@ export default defineComponent({
 		WalletMultiButton,
 	},
 	setup() {
-		const wallet: WalletStore = useWallet();
+		const wallet: WalletStore = useWorkspace().userWallet;
 		const connection = new Connection(clusterApiUrl('devnet'))
 		const walletBalance = ref(0);
 		// onMounted(() => {
@@ -70,7 +71,7 @@ export default defineComponent({
 		// 		}, 5000);
 		// 	})
 		// });
-		const isWalletConnected = ref(true);
+		const isWalletConnected: Ref<boolean> = wallet.connected;
 
 		const onSendLamportToRandom = () => {
 			sendOneLamportToRandomAddress(wallet, connection);
