@@ -1,8 +1,13 @@
 <template>
 	<main class="d-flex align-items-center justify-content-center">
 		<h1>Page Not Found :(</h1>
+		<RouterLink :to="{ name: 'home' }">Go Home</RouterLink>
 	</main>
 </template>
+
+<script setup lang="ts">
+import { RouterLink } from "vue-router";
+</script>
 
 <style scoped>
 main {
