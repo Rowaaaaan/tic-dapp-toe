@@ -15,7 +15,7 @@
 			<p class="fs-3">Or</p>
 			<p class="fs-3">Create Game</p>
 			<div class="d-flex justify-content-between">
-				<input ref="gameIdRef" class="game-key-input" placeholder="Game public key here" />
+				<input ref="gameIdRef" class="game-key-input" placeholder="Player 2 public key here" />
 				<button class="btn btn-success m-2" @click="onCreateGame">Create</button>
 			</div>
 		</div>
