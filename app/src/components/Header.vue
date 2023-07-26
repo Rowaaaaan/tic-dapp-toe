@@ -3,11 +3,11 @@
 		<div>
 			<a href="https://solana.com"><img src="../assets/solanaLogo.png" class="logo rounded" alt="Solana logo"></a>
 		</div>
-		<div class="d-flex align-items-center">
+		<div class="d-flex flex-end align-items-center">
 			<div v-if="isWalletConnected" class="text-light">
 				<p class="bal fs-4">{{ walletBalance }} SOL</p>
 			</div>
-			<div class="d-flex">
+			<div class="wallet-btn-group d-flex">
 				<button class="btn btn-danger m-2" @click="onSendLamportToRandom">
 					Send 1 Lamport
 				</button>
@@ -30,9 +30,10 @@ header {
 	background: #272528;
 }
 
-header>button {
-	height: 3rem;
-	width: 15rem;
+header button {
+	margin: 0;
+	height: 10vh;
+	width: 9rem;
 }
 
 .logo {
