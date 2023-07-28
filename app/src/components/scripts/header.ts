@@ -3,7 +3,7 @@ import { ref, defineComponent, onMounted } from "vue";
 import {
 	SystemProgram,
 	Transaction,
-	PublicKey,
+	Keypair,
 	Connection,
 	clusterApiUrl,
 	LAMPORTS_PER_SOL
