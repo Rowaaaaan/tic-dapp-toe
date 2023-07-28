@@ -55,6 +55,13 @@ async function requestAirdrop(wallet: WalletStore, connection: Connection) {
 		: console.error("Public key is invalid!");
 }
 
+function truncateDecimals(num: number, digits: number) {
+	const multiplier = Math.pow(10, digits),
+		adjustedNum = num * multiplier,
+		truncatedNum = Math[adjustedNum < 0 ? 'ceil' : 'floor'](adjustedNum);
+
+	return truncatedNum / multiplier;
+};
 async function getBalance(wallet: WalletStore, connection: Connection): Promise<number> {
 	const { publicKey } = wallet;
 
@@ -63,10 +70,18 @@ async function getBalance(wallet: WalletStore, connection: Connection): Promise<
 		return 0;
 	}
 
-	const balance: number | void = publicKey.value ? await connection.getBalance(publicKey.value)
-		.catch(e => console.log(`Error getting balance: ${e}`))
-		: 0;
-	return balance ? balance : 0;
+	let balance: number | void = 0;
+
+	try {
+		balance = publicKey.value ? await connection.getBalance(publicKey.value)
+			.catch(e => console.log(`Error getting balance: ${e}`))
+			: 0;
+		console.log(`Public key [${publicKey.value}] balance: ${balance}`)
+	} catch (e) {
+		console.error(`Failed to get balance. Error: ${e}`);
+	}
+
+	return balance ? truncateDecimals(balance / LAMPORTS_PER_SOL, 2) : 0;
 }
 
 export default defineComponent({
@@ -74,16 +89,14 @@ export default defineComponent({
 		WalletMultiButton,
 	},
 	setup() {
-		const wallet: WalletStore = useWorkspace().userWallet;
+		const { wallet } = useWorkspace();
 		const connection = new Connection(clusterApiUrl('devnet'))
 		const walletBalance = ref(0);
-		// onMounted(() => {
-		// 	setInterval(() => {
-		// 		getBalance(wallet, connection).then((bal) => {
-		// 			if (typeof bal === 'number') walletBalance.value = bal;
-		// 		}, 5000);
-		// 	})
-		// });
+		onMounted(() => {
+			setInterval(async () => {
+				walletBalance.value = await getBalance(wallet, connection);
+			}, 10000);
+		});
 		const isWalletConnected: Ref<boolean> = wallet.connected;
 
 		const onSendLamportToRandom = () => {

@@ -4,8 +4,8 @@
 			<a href="https://solana.com"><img src="../assets/solanaLogo.png" class="logo rounded" alt="Solana logo"></a>
 		</div>
 		<div class="d-flex flex-end align-items-center">
-			<div v-if="isWalletConnected" class="text-light">
-				<p class="bal fs-4">{{ walletBalance }} SOL</p>
+			<div v-if="isWalletConnected" class="d-flex text-light">
+				<p class="bal fs-5">{{ walletBalance }} SOL</p>
 			</div>
 			<div class="wallet-btn-group d-flex">
 				<button class="btn btn-danger m-2" @click="onSendLamportToRandom">
