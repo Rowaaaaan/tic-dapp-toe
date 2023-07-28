@@ -4,19 +4,19 @@
 		<div v-if="!isWalletConnected">
 			<p class="text-xl-b">Connect Wallet to continue</p>
 		</div>
-		<div class="d-flex flex-column align-items-center">
+		<div class="d-flex flex-column">
 			<p class="fs-3">To join game, enter game public key:</p>
 			<div class="d-flex flex-row">
-				<input ref="playerTwoPubKey" class="game-key-input" placeholder="Game public key here" />
+				<input v-model="gameIdRef" class="game-key-input" placeholder="Game public key here" @enter="onJoinGame" />
 				<button class="btn btn-primary m-2" @click="onJoinGame">Join</button>
 			</div>
-		</div>
-		<div class="d-flex flex-column align-items-center">
-			<p class="fs-3">Or</p>
-			<p class="fs-3">Create Game</p>
-			<div class="d-flex justify-content-between">
-				<input ref="gameIdRef" class="game-key-input" placeholder="Player 2 public key here" />
-				<button class="btn btn-success m-2" @click="onCreateGame">Create</button>
+			<div class="d-flex flex-column">
+				<p class="fs-3 text-center">Or</p>
+				<p class="fs-3 text-center">Create Game</p>
+				<div class="d-flex justify-content-between">
+					<input v-model="playerTwoPubKeyRef" class="game-key-input" placeholder="Player 2 public key here" />
+					<button class="btn btn-success m-2" @click="onCreateGame">Create</button>
+				</div>
 			</div>
 		</div>
 	</div>
