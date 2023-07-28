@@ -11,12 +11,14 @@
 			</div>
 			<div class="wallet-btn-group d-flex">
 				<button class="btn btn-danger m-2" @click="onSendLamportToRandom">
-					Send 1 Lamport
+					Test Send
 				</button>
-				<button class="btn btn-primary m-2" @click="onRequestAirdrop">
+				<button class="btn btn-primary my-2" @click="onRequestAirdrop">
 					Request 1 SOL
 				</button>
-				<WalletMultiButton />
+				<div class="btn-wallet align-self-center m-2">
+					<WalletMultiButton />
+				</div>
 			</div>
 		</div>
 	</header>
@@ -24,9 +26,21 @@
 
 <script lang="ts" src="./scripts/header" />
 
+
 <style scoped>
+@media (max-width: 700px) {
+	.logo {
+		display: none;
+	}
+}
+
+.btn-wallet {
+	margin-right: 1rem;
+}
+
 header {
 	padding: 20px;
+	min-height: 75px;
 	height: 12vh;
 	width: 100vw;
 	background: #272528;
@@ -34,7 +48,7 @@ header {
 
 header button {
 	margin: 0;
-	height: 10vh;
+	height: 3rem;
 	width: 9rem;
 }
 
@@ -45,7 +59,7 @@ header button {
 }
 
 .bal {
-	width: 5rem;
+	min-width: 5rem;
 	justify-self: center;
 }
 </style>
