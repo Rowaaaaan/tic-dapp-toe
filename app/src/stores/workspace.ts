@@ -23,6 +23,24 @@ import {
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { initWallet } from "solana-wallets-vue";
 
+/**
+ * Validate if program has data, and the data is valid
+ *
+ * @throws Error - if program is null, or program data is null
+ */
+export function validateProgram(program: Program<any> | null | undefined) {
+	if (program == null) throw new Error("Program value is null");
+	return true;
+}
+
+/**
+ * Validate if pubkey is valid and contains valid data
+ *
+ * @throws Error - if public key is null or invalid
+ */
+export function validatePubKey(pubKey: PublicKey) {
+	if (pubKey == null) throw new Error("Invalid public key!");
+}
 
 const walletOptions = {
 	wallets: [
