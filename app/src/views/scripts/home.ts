@@ -1,4 +1,4 @@
-import { onMounted, ref } from "vue";
+import { onMounted, watch, ref } from "vue";
 import type { Ref } from "vue";
 import { useWorkspace } from "../../stores/workspace";
 import { useGameManager } from "./game-manager";
@@ -12,27 +12,49 @@ export default {
 		const gameIdRef = ref("");
 
 		const router = useRouter();
-		let { userWallet, provider } = useWorkspace();
-		console.log("Wallet Data: ");
-		console.log(userWallet);
+		let { wallet, provider, program } = useWorkspace();
 
-		const isWalletConnected = userWallet.connected;
-		console.log("Wallet connected: ");
-		console.log(isWalletConnected.value);
+		const isWalletConnected: Ref<boolean> = wallet?.connected || ref(false);
+		watch(isWalletConnected, () => {
+			console.log("Wallet Data updated! Data: ");
+			console.log(wallet);
+			console.log("Wallet connected: ");
+			console.log(isWalletConnected.value);
+		})
 
-		console.log("Provider data: ");
-		console.log(provider.value);
+		watch(provider, () => {
+			console.log("Provider changed!");
+			console.log(provider);
+		})
+
+		watch(program, () => {
+			console.log("Program data changed!");
+			console.log(program);
+		})
 
 		const onJoinGame = () => {
-			router.push({ path: `/game/${gameIdRef}` });
+			router.push({ path: `/game/${gameIdRef.value}` });
 		}
 
-		const onCreateGame = () => {
-			createGame(new PublicKey(playerTwoPubKeyRef));
-			console.log("Game created");
-			router.push({ path: "/game" });
+		const onCreateGame = async () => {
+			let playerTwoPubKey: PublicKey;
+			try {
+				console.log(`Player two pubkey: ${playerTwoPubKeyRef.value}`);
+				playerTwoPubKey = new PublicKey(playerTwoPubKeyRef.value);
+				await createGame(playerTwoPubKey)
+					.then(gameId => {
+						console.log("Game created");
+						router.push({ path: `/game/${gameId}` });
+					})
+					.catch(e => {
+						console.error(`Failed to create game! Error: ${e}`);
+					});
+			} catch (e) {
+				console.error(`Failed to create public key! Error: ${e}`);
+			}
+
 		}
 
-		return { gameIdRef, userWallet, isWalletConnected, onJoinGame, onCreateGame };
+		return { gameIdRef, playerTwoPubKeyRef, userWallet: wallet, isWalletConnected, onJoinGame, onCreateGame };
 	},
 };
