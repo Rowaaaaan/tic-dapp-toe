@@ -1,29 +1,42 @@
 import { ref, defineComponent, onMounted } from "vue";
-import { Keypair, SystemProgram, Transaction, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+import {
+	SystemProgram,
+	Transaction,
+	PublicKey,
+	Connection,
+	clusterApiUrl,
+	LAMPORTS_PER_SOL
+} from "@solana/web3.js";
+
 import { useWorkspace } from "../../stores/workspace";
 import { WalletMultiButton } from 'solana-wallets-vue';
-import type { WalletStore, Wallet } from 'solana-wallets-vue/dist/types';
+import type { WalletStore } from 'solana-wallets-vue/dist/types';
 import type { Ref } from "vue";
 
-import { Connection, clusterApiUrl } from '@solana/web3.js';
-
 async function sendOneLamportToRandomAddress(wallet: WalletStore, connection: Connection) {
-	console.log("Transfer 1 lamport requested");
 	const { publicKey, sendTransaction } = wallet;
+	console.log(`Transfer 0.01 SOL requested by ${publicKey.value}`);
 	if (!publicKey.value) return;
 
 	const transaction = new Transaction().add(
 		SystemProgram.transfer({
 			fromPubkey: publicKey.value,
 			toPubkey: Keypair.generate().publicKey,
-			lamports: 1,
+			lamports: 0.01 * LAMPORTS_PER_SOL,
 		})
 	);
 
 	sendTransaction(transaction, connection)
-		.then((signature: string) => connection.confirmTransaction(signature, 'processed')
-			.then(msg => console.log(`Transaction confirmed. ${msg}`))
-			.catch(e => console.error(`Transaction failed. Error: ${e}`)))
+		.then((signature: string) => {
+			connection.confirmTransaction(signature, 'processed');
+			console.log(`Transaction confirmed! Hash: ${signature}`);
+		})
+		.then(msg => {
+			console.log(`Block details`)
+			console.log(msg);
+		})
+		.catch(e => console.error(`Transaction failed. Error: ${e}`))
 		.catch((e: any) => console.error(`Failed to send lamport. Error: ${e}`));
 }
 
