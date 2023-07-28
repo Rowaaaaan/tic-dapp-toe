@@ -1,7 +1,9 @@
 <template>
 	<header class="d-flex justify-content-between">
-		<div>
-			<a href="https://solana.com"><img src="../assets/solanaLogo.png" class="logo rounded" alt="Solana logo"></a>
+		<div class="logo align-self-center">
+			<RouterLink :to="{ path: '/' }">
+				<h1>Home</h1>
+			</RouterLink>
 		</div>
 		<div class="d-flex flex-end align-items-center">
 			<div v-if="isWalletConnected" class="d-flex text-light">
