@@ -20,6 +20,7 @@ export default {
 		const gameId = route.params.gameId as string;
 		let gamePubKey: PublicKey;
 		const gameState: Ref<any> = ref();
+		const notice: Ref<string | null> = ref(null);
 
 		// Check if a public key can be generated from the game id passed in
 		try {
@@ -147,11 +148,13 @@ export default {
 					});
 			} catch (e) {
 				console.log(`Failed to set tile. Error: ${e}`);
+				notice.value = `Failed to set tile. Error: ${e}`;
 			}
 		};
 
 		const onSetTile = async (tile: Tile) => {
 			if (playerWallet == null) {
+				notice.value = "Wallet data is null. Trying to get data from connected wallet...";
 				setPlayerWalletData();
 			}
 			setTile(tile);
@@ -173,6 +176,8 @@ export default {
 			board,
 			onSetTile,
 			onRefreshBoard
+			notice,
+			lastTxHash,
 		};
 	},
 };

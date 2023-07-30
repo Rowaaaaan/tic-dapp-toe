@@ -4,6 +4,11 @@
 		<div v-if="!isWalletConnected">
 			<p class="text-xl-b">Connect Wallet to continue</p>
 		</div>
+		<div v-if="notice" class="d-flex align-items-center text-bg-primary border border-3 border-info rounded-3 p-3">
+			<p class="fw-bold text-center">
+				{{ notice }}
+			</p>
+		</div>
 		<div class="d-flex flex-column">
 			<p class="fs-3">To join game, enter game public key:</p>
 			<div class="d-flex flex-row">

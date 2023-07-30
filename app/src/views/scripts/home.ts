@@ -10,6 +10,7 @@ export default {
 		const { createGame } = useGameManager();
 		const playerTwoPubKeyRef = ref("");
 		const gameIdRef = ref("");
+		const notice: Ref<string | null> = ref(null);
 
 		const router = useRouter();
 		let { wallet, provider, program } = useWorkspace();
@@ -37,6 +38,10 @@ export default {
 		}
 
 		const onCreateGame = async () => {
+			if (provider.value?.wallet == null) {
+				notice.value = "Wallet of game creator is null!";
+				return;
+			}
 			let playerTwoPubKey: PublicKey;
 			try {
 				console.log(`Player two pubkey: ${playerTwoPubKeyRef.value}`);
@@ -56,5 +61,6 @@ export default {
 		}
 
 		return { gameIdRef, playerTwoPubKeyRef, userWallet: wallet, isWalletConnected, onJoinGame, onCreateGame };
+			notice,
 	},
 };

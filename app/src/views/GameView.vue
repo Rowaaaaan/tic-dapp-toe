@@ -1,6 +1,7 @@
 <template>
 	<main class="d-flex justify-content-center">
 		<div class="d-flex flex-wrap align-items-center justify-content-center game-wrapper">
+			<p>{{ lastTxHash }}</p>
 			<div class="board d-flex flex-column justify-content-center align-items-center">
 				<div v-for="row of board.rows" class="row">
 					<div v-for="tile of row" :key="tile" class="tile col d-flex justify-content-center align-items-center"
@@ -39,6 +40,11 @@
 						{{ playerTurn ? "Your turn" : "Opponent's turn" }}
 					</p>
 				</div>
+			</div>
+			<div v-if="notice" class="text-bg-primary border border-3 border-info rounded-3 p-3">
+				<p class="fw-bold text-center">
+					{{ notice }}
+				</p>
 			</div>
 		</div>
 	</main>
