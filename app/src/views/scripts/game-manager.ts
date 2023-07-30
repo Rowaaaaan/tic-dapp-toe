@@ -46,15 +46,11 @@ const createGame = async (playerTwoPubKey: PublicKey | null) => {
 			.then(msg => {
 				console.log("Game created! Message:");
 				console.log(msg);
-			})
-			.catch(e => {
-				console.error(`Failed to create game! Error: ${e}`);
 			});
 
 		return gameKeypair.publicKey.toBase58();
 	} catch (e) {
-		console.error(`Failed to create game! Error: ${e}`);
-		return null;
+		throw new Error(`Failed to create game! Error: ${e}`);
 	}
 };
 
@@ -73,7 +69,7 @@ const retrieveGameSession = async (gamePubKey: PublicKey) => {
 
 		return gameState;
 	} catch (e) {
-		console.error(`Failed to create game! Error: ${e}`);
+		console.error(`Failed to retrieve game! Error: ${e}`);
 		return null;
 	}
 }
