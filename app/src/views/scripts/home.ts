@@ -50,17 +50,21 @@ export default {
 					.then(gameId => {
 						console.log("Game created");
 						router.push({ path: `/game/${gameId}` });
-					})
-					.catch(e => {
-						console.error(`Failed to create game! Error: ${e}`);
 					});
 			} catch (e) {
-				console.error(`Failed to create public key! Error: ${e}`);
+				console.error(e);
 			}
 
 		}
 
-		return { gameIdRef, playerTwoPubKeyRef, userWallet: wallet, isWalletConnected, onJoinGame, onCreateGame };
+		return {
+			gameIdRef,
+			playerTwoPubKeyRef,
+			userWallet: wallet,
+			isWalletConnected,
+			onJoinGame,
+			onCreateGame,
 			notice,
+		};
 	},
 };
