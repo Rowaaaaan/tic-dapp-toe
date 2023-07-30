@@ -9,7 +9,7 @@ import {
 	LAMPORTS_PER_SOL
 } from "@solana/web3.js";
 
-import { useWorkspace } from "../../stores/workspace";
+import { useWorkspace, validatePubKey } from "../../stores/workspace";
 import { WalletMultiButton } from 'solana-wallets-vue';
 import type { WalletStore } from 'solana-wallets-vue/dist/types';
 import type { Ref } from "vue";
@@ -62,24 +62,16 @@ function truncateDecimals(num: number, digits: number) {
 
 	return truncatedNum / multiplier;
 };
+
 async function getBalance(wallet: WalletStore, connection: Connection): Promise<number> {
 	const { publicKey } = wallet;
 
-	if (publicKey.value === null) {
-		console.error("Public key is invalid or null!");
-		return 0;
-	}
+	validatePubKey(publicKey.value);
 
-	let balance: number | void = 0;
-
-	try {
-		balance = publicKey.value ? await connection.getBalance(publicKey.value)
-			.catch(e => console.log(`Error getting balance: ${e}`))
-			: 0;
-		console.log(`Public key [${publicKey.value}] balance: ${balance}`)
-	} catch (e) {
-		console.error(`Failed to get balance. Error: ${e}`);
-	}
+	let balance: number | void = publicKey.value
+		? await connection.getBalance(publicKey.value)
+			.catch(e => console.error(`Error getting balance: ${e}`))
+		: 0;
 
 	return balance ? truncateDecimals(balance / LAMPORTS_PER_SOL, 2) : 0;
 }
