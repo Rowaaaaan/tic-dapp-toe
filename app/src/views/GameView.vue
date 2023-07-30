@@ -28,11 +28,18 @@
 					<p class="fw-bold">Player 2 [O]:</p>
 					<p>{{ playerTwoPubKey }}</p>
 				</div>
-				<div v-if="winner != null">
+				<div class="d-flex justify-content-between" v-if="lastTxHash">
+					<p class="fw-bold">Last move:
+						<a :href="`https://explorer.solana.com/tx/${lastTxHash}?cluster=devnet`">
+							{{ lastTxHash }}
+						</a>
+					</p>
+				</div>
+				<div v-if="gameOverState">
 					<p class="fs-2 fw-bold">
-						{{ playerOneWin ? "Player 1" :
-							"Player 2" }}
-						wins!
+						{{ gameOverState == "won"
+							? (playerOneWin ? "Player 1 wins!" : "Player 2 wins!")
+							: "Draw" }}
 					</p>
 				</div>
 				<div v-else class="d-flex justify-content-between">

@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
-import { useWorkspace, validateProgram } from "../../stores/workspace";
+import { useWorkspace, validateProgram, validatePubKey } from "../../stores/workspace";
 
 import { useGameManager } from "./game-manager";
 import { Board, Tile } from "./game-objects";
@@ -22,15 +22,19 @@ export default {
 		const gameState: Ref<any> = ref();
 		const notice: Ref<string | null> = ref(null);
 
-		// Check if a public key can be generated from the game id passed in
-		try {
-			gamePubKey = new PublicKey(gameId);
-
-		} catch (e) {
-			console.error(`Game ID: ${gameId}`);
-			console.error(`Error getting pubkey from game id. Error: ${e}`);
-			router.push({ name: "GameNotFound" });
-		}
+		onMounted(async () => {
+			// Check if a public key can be generated from the game id passed in
+			try {
+				useWorkspace();
+				gamePubKey = new PublicKey(gameId);
+				gameState.value = await retrieveGameSession(gamePubKey);
+				console.log("GameView component mounted");
+			} catch (e) {
+				console.error(`Game ID: ${gameId}`);
+				console.error(`Error getting pubkey from game id. Error: ${e}`);
+				router.push({ name: "GameNotFound" });
+			}
+		});
 
 		// Get the keys as a Uint8Array to be able to convert it to a string.
 		// Otherwise, the comparison will fail for some reason.
@@ -40,23 +44,28 @@ export default {
 		const turn: Ref<number> = ref(0);
 		const playerTurn: Ref<boolean> = ref(false);
 		const playerOneWin: Ref<boolean> = ref(false);
+		const gameOverState: Ref<string | null> = ref(null);
 		watch(gameState, () => {
+			console.log("Game state changed!");
 			updateBoardState();
-			playerOnePubKey.value = gameState.value?.players[0] as Uint8Array;
-			playerTwoPubKey.value = gameState.value?.players[1] as Uint8Array;
-			winner.value = gameState.value?.state.won?.winner as Uint8Array;
-			turn.value = gameState.value?.turn;
-			playerTurn.value = (playerPubKey.value?.toString() === playerOnePubKey.value.toString())
-				? (turn.value % 2 === 1)
-				: (turn.value % 2 === 0);
-			playerOneWin.value = (playerOnePubKey.value?.toString() === winner.value?.toString());
+			try {
+				gameOverState.value = (gameState.value?.state != undefined && gameState.value?.state.active == undefined)
+					? gameState.value?.state.won != undefined
+						? "won" : "tie"
+					: null;
+				playerOnePubKey.value = gameState.value?.players[0] as Uint8Array;
+				playerTwoPubKey.value = gameState.value?.players[1] as Uint8Array;
+				winner.value = gameState.value?.state.won?.winner as Uint8Array;
+				turn.value = gameState.value?.turn;
+				playerTurn.value = (playerPubKey.value?.toString() === playerOnePubKey.value.toString())
+					? (turn.value % 2 === 1)
+					: (turn.value % 2 === 0);
+				playerOneWin.value = (playerOnePubKey.value?.toString() === winner.value?.toString());
+			} catch (e) {
+				console.log(`Failed to update game state. Error: ${e}`);
+			}
 		});
 
-		onMounted(async () => {
-			useWorkspace();
-			gameState.value = await retrieveGameSession(gamePubKey);
-			console.log("GameView component mounted");
-		});
 
 		let playerWallet: anchor.AnchorProvider = (program?.value?.provider as anchor.AnchorProvider);
 		const playerPubKey: Ref<PublicKey | null> = wallet.publicKey;
@@ -86,7 +95,10 @@ export default {
 		// Horribly inefficient method of updating board state from RPC data
 		const updateBoardState = () => {
 			try {
-				console.log("Tile states");
+				if (gameState.value == null) {
+					gameState.value = updateGameState();
+				}
+
 				let x = 0;
 				let y = 0;
 				for (let row of gameState.value.board) {
@@ -103,6 +115,8 @@ export default {
 					}
 					x++;
 				}
+				console.log("Board State");
+				console.log(board.value.rows);
 			} catch (e) {
 				console.log(`Failed to get tile states. Error: ${e}`)
 			}
@@ -114,6 +128,7 @@ export default {
 				validateProgram(program?.value);
 				await program?.value?.account.game.fetch(gamePubKey)
 					.then((state) => {
+						gameState.value = state;
 						returnState = state;
 					})
 					.catch((e) => {
@@ -125,16 +140,18 @@ export default {
 			return returnState;
 		}
 
-		const setTile = async (tile: Tile) => {
+		const setTile = async (tile: Tile): Promise<string | undefined | null> => {
 			try {
+				// Throws an error if either condition fails
 				validateProgram(program?.value);
-				if (playerPubKey.value == null) return;
+				validatePubKey(playerPubKey.value);
+
 				console.log("Player wallet data");
 				console.log(playerWallet);
 				program?.value?.methods
 					.play({ row: tile.row, column: tile.column })
 					.accounts({
-						player: playerPubKey.value,
+						player: playerPubKey.value || undefined,
 						game: gamePubKey
 					})
 					.signers(playerWallet ? [] : [playerWallet])
@@ -142,22 +159,27 @@ export default {
 					.then(txHash => {
 						console.log(`Tile set! Hash: ${txHash}`);
 						updateGameState();
+						return txHash;
 					})
 					.catch(e => {
-						console.log(`Failed to set tile. Error: ${e}`);
+						console.error(`Failed to set tile. Error: ${e}`);
 					});
 			} catch (e) {
-				console.log(`Failed to set tile. Error: ${e}`);
 				notice.value = `Failed to set tile. Error: ${e}`;
+				return null;
 			}
 		};
 
+		const lastTxHash: Ref<string | undefined | null> = ref(null);
 		const onSetTile = async (tile: Tile) => {
 			if (playerWallet == null) {
 				notice.value = "Wallet data is null. Trying to get data from connected wallet...";
 				setPlayerWalletData();
 			}
-			setTile(tile);
+			else {
+				lastTxHash.value = await setTile(tile);
+				console.log(`Last TX hash: ${lastTxHash.value || 'none'}`);
+			}
 		};
 
 		const onRefreshBoard = () => {
@@ -171,11 +193,12 @@ export default {
 			playerOneWin,
 			playerTurn,
 			winner,
+			gameOverState,
 			gameId,
 			turn,
 			board,
 			onSetTile,
-			onRefreshBoard
+			onRefreshBoard,
 			notice,
 			lastTxHash,
 		};
