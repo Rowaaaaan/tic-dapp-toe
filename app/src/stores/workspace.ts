@@ -38,7 +38,7 @@ export function validateProgram(program: Program<any> | null | undefined) {
  *
  * @throws Error - if public key is null or invalid
  */
-export function validatePubKey(pubKey: PublicKey) {
+export function validatePubKey(pubKey: PublicKey | null) {
 	if (pubKey == null) throw new Error("Invalid public key!");
 }
 
@@ -77,7 +77,7 @@ function createWorkspace() {
 
 	// @ts-ignore
 	const IDL: TicTacToe = idl;
-	const programAddress = process.env.PROGRAM_ADDRESS ?? "CwnZBvhPLva1bSUiunhvatsBAL4o7LspALj1BgQpa3AP";
+	const programAddress = "CwnZBvhPLva1bSUiunhvatsBAL4o7LspALj1BgQpa3AP";
 	const connection = new Connection(clusterApiUrl("devnet", true), "confirmed");
 	const programID = new PublicKey(programAddress);
 
